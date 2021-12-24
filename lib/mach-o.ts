@@ -57,9 +57,9 @@ function patchMachOExecutable(file: Buffer) {
   return file;
 }
 
-function signMachOExecutable(executable: string) {
+function signMachOExecutable(executable: string, codesignCert?: string) {
   try {
-    execFileSync('codesign', ['--sign', '-', executable], { stdio: 'inherit' });
+    execFileSync('codesign', ['--sign', codesignCert || '-', executable], { stdio: 'inherit' });
   } catch {
     execFileSync('ldid', ['-Cadhoc', '-S', executable], { stdio: 'inherit' });
   }

@@ -251,6 +251,7 @@ export async function exec(argv2: string[]) {
       'targets',
       'C',
       'compress',
+      'codesign-cert',
     ],
     default: { bytecode: true, 'native-build': true },
   });
@@ -577,7 +578,7 @@ export async function exec(argv2: string[]) {
         await remove(signedBinaryPath);
         copyFileSync(f.binaryPath, signedBinaryPath);
         try {
-          signMachOExecutable(signedBinaryPath);
+          signMachOExecutable(signedBinaryPath, argv['codesign-cert']);
         } catch {
           throw wasReported('Cannot generate bytecode', [
             'pkg fails to run "codesign" utility. Due to the mandatory signing',
@@ -692,7 +693,7 @@ export async function exec(argv2: string[]) {
         try {
           // sign executable ad-hoc to workaround the new mandatory signing requirement
           // users can always replace the signature if necessary
-          signMachOExecutable(target.output);
+          signMachOExecutable(target.output, argv['codesign-cert']);
         } catch {
           if (target.arch === 'arm64') {
             log.warn('Unable to sign the macOS executable', [
